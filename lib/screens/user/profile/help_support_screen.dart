@@ -67,7 +67,7 @@ class HelpSupportScreen extends StatelessWidget {
                             Text('Contact Us', style: AppTextStyles.title.copyWith(fontSize: 16)),
                             const SizedBox(height: 12),
                             _ContactRow(icon: Icons.email_outlined, label: 'support@washgo.com'),
-                            _ContactRow(icon: Icons.phone_outlined, label: '+63 912 345 6789'),
+                            _ContactRow(icon: Icons.phone_outlined, label: '+63 945 347 7555'),
                             _ContactRow(icon: Icons.schedule_outlined, label: 'Mon–Sat, 8:00 AM – 6:00 PM'),
                           ],
                         ),

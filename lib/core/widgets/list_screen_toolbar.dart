@@ -118,31 +118,49 @@ class _ListFilterChipsState extends State<ListFilterChips> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 42,
-      child: Listener(
-        onPointerSignal: _onPointerScroll,
-        child: Scrollbar(
-          controller: _scrollController,
-          thumbVisibility: true,
-          interactive: true,
-          notificationPredicate: (notification) => notification.depth == 1,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                for (var i = 0; i < widget.filters.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 8),
-                  _FilterChipItem(
-                    label: widget.filters[i],
-                    isSelected: widget.selected == widget.filters[i],
-                    onSelected: () => widget.onSelected(widget.filters[i]),
-                  ),
-                ],
-              ],
+    final scrollbarTheme = ScrollbarTheme.of(context).copyWith(
+      thumbVisibility: WidgetStateProperty.all(true),
+      trackVisibility: WidgetStateProperty.all(true),
+      thickness: WidgetStateProperty.all(8),
+      radius: const Radius.circular(4),
+      thumbColor: WidgetStateProperty.all(AppColors.cyan.withValues(alpha: 0.9)),
+      trackColor: WidgetStateProperty.all(Colors.white.withValues(alpha: 0.12)),
+      crossAxisMargin: 0,
+      mainAxisMargin: 2,
+      minThumbLength: 36,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Theme(
+        data: Theme.of(context).copyWith(scrollbarTheme: scrollbarTheme),
+        child: SizedBox(
+          height: 54,
+          child: Listener(
+            onPointerSignal: _onPointerScroll,
+            child: Scrollbar(
+              controller: _scrollController,
+              thumbVisibility: true,
+              trackVisibility: true,
+              interactive: true,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  children: [
+                    for (var i = 0; i < widget.filters.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      _FilterChipItem(
+                        label: widget.filters[i],
+                        isSelected: widget.selected == widget.filters[i],
+                        onSelected: () => widget.onSelected(widget.filters[i]),
+                      ),
+                    ],
+                    const SizedBox(width: 4),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

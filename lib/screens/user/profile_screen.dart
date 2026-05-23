@@ -116,6 +116,12 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _MenuItem(
+            icon: Icons.person_outline,
+            title: 'Edit Profile',
+            subtitle: 'Name, email, photo, and password',
+            onTap: () => _openEditProfile(context),
+          ),
+          _MenuItem(
             icon: Icons.calendar_month_outlined,
             title: 'My Bookings',
             subtitle: '$bookingCount ${bookingCount == 1 ? 'booking' : 'bookings'}',
