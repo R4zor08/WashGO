@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
 import 'package:washgo/core/constants/app_constants.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/state/app_state.dart';
+import 'package:washgo/core/widgets/responsive_content.dart';
 import 'package:washgo/core/widgets/custom_button.dart';
 import 'package:washgo/core/widgets/custom_text_field.dart';
 import 'package:washgo/models/service_model.dart';
@@ -150,11 +152,13 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                child: ResponsiveContent.auth(
+                  alignTop: true,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(ResponsiveLayout.horizontalPadding(context)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                       _ServiceSelector(
                         services: services,
                         selected: _selectedService,
@@ -229,6 +233,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                     ],
                   ),
+                ),
                 ),
               ),
             ],

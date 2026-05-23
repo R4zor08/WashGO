@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
 import 'package:washgo/core/constants/booking_status.dart';
 import 'package:washgo/core/state/app_state.dart';
@@ -103,7 +104,12 @@ class _ManageBookingsScreenState extends State<ManageBookingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: EdgeInsets.fromLTRB(
+            ResponsiveLayout.horizontalPadding(context),
+            16,
+            ResponsiveLayout.horizontalPadding(context),
+            0,
+          ),
           child: Text('Manage Bookings', style: AppTextStyles.headline.copyWith(fontSize: 24)),
         ),
         Padding(
@@ -128,7 +134,7 @@ class _ManageBookingsScreenState extends State<ManageBookingsScreen> {
           height: 40,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: ResponsiveLayout.horizontalPadding(context)),
             itemCount: _filters.length,
             separatorBuilder: (_, _) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
@@ -145,7 +151,12 @@ class _ManageBookingsScreenState extends State<ManageBookingsScreen> {
         ),
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+            padding: EdgeInsets.fromLTRB(
+              ResponsiveLayout.horizontalPadding(context),
+              8,
+              ResponsiveLayout.horizontalPadding(context),
+              ResponsiveLayout.navigationBottomInset(context),
+            ),
             itemCount: bookings.length,
             itemBuilder: (context, index) {
               final booking = bookings[index];

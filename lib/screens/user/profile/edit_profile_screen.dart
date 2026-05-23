@@ -3,8 +3,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/custom_button.dart';
+import 'package:washgo/core/widgets/responsive_content.dart';
 import 'package:washgo/core/widgets/custom_text_field.dart';
 import 'package:washgo/core/widgets/profile_avatar.dart';
 
@@ -125,22 +127,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: [
               _buildAppBar(context),
               Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildPhotoCard(),
-                      const SizedBox(height: 16),
-                      _buildAccountCard(),
-                      const SizedBox(height: 16),
-                      _buildPasswordCard(),
-                      const SizedBox(height: 100),
-                    ],
+                child: ResponsiveContent.auth(
+                  alignTop: true,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      ResponsiveLayout.horizontalPadding(context),
+                      8,
+                      ResponsiveLayout.horizontalPadding(context),
+                      16,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildPhotoCard(),
+                        const SizedBox(height: 16),
+                        _buildAccountCard(),
+                        const SizedBox(height: 16),
+                        _buildPasswordCard(),
+                        const SizedBox(height: 100),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              _buildBottomBar(),
+              _buildBottomBar(context),
             ],
           ),
         ),
@@ -366,9 +376,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      padding: EdgeInsets.fromLTRB(
+        ResponsiveLayout.horizontalPadding(context),
+        12,
+        ResponsiveLayout.horizontalPadding(context),
+        12,
+      ),
       decoration: BoxDecoration(
         color: AppColors.cardDark.withValues(alpha: 0.95),
         border: Border(

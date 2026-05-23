@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/app_scaffold.dart';
 import 'package:washgo/core/widgets/booking_card.dart';
@@ -10,6 +11,7 @@ import 'package:washgo/core/widgets/profile_avatar.dart';
 import 'package:washgo/core/widgets/quick_action_card.dart';
 import 'package:washgo/core/widgets/section_header.dart';
 import 'package:washgo/core/widgets/service_card.dart';
+import 'package:washgo/models/booking_model.dart';
 import 'package:washgo/models/service_model.dart';
 import 'package:washgo/screens/user/booking_screen.dart';
 import 'package:washgo/screens/user/qr_receipt_screen.dart';
@@ -31,7 +33,7 @@ class UserDashboardScreen extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+      padding: ResponsiveLayout.screenPadding(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,61 +71,9 @@ class UserDashboardScreen extends StatelessWidget {
             ),
           const SizedBox(height: 24),
           const SectionHeader(title: 'Quick Actions'),
-          Row(
-            children: [
-              Expanded(
-                child: QuickActionCard(
-                  icon: Icons.calendar_today_outlined,
-                  label: 'Book Wash',
-                  color: AppColors.aquaBlue,
-                  onTap: () => onNavigate(1),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: QuickActionCard(
-                  icon: Icons.queue_outlined,
-                  label: 'Track Queue',
-                  color: AppColors.cyan,
-                  onTap: () => onNavigate(2),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: QuickActionCard(
-                  icon: Icons.history_outlined,
-                  label: 'History',
-                  color: AppColors.teal,
-                  onTap: () => onNavigate(3),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: QuickActionCard(
-                  icon: Icons.qr_code_2_outlined,
-                  label: 'QR Receipt',
-                  color: AppColors.deepBlue,
-                  onTap: () {
-                    if (active == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No active booking for QR receipt.')),
-                      );
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => QRReceiptScreen(booking: active),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
+          _QuickActionsGrid(
+            active: active,
+            onNavigate: onNavigate,
           ),
           const SizedBox(height: 24),
           SectionHeader(
@@ -166,38 +116,149 @@ class _DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    final narrow = MediaQuery.sizeOf(context).width < 400;
+
+    final greeting = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hello, $firstName',
-                style: AppTextStyles.headline.copyWith(fontSize: 22),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Ready to make your car shine today?',
-                style: AppTextStyles.subtitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
+        Text(
+          'Hello, $firstName',
+          style: AppTextStyles.headline.copyWith(fontSize: 22),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(width: 8),
-        const WashGoLogo(height: 36),
-        const SizedBox(width: 8),
+        const SizedBox(height: 4),
+        Text(
+          'Ready to make your car shine today?',
+          style: AppTextStyles.subtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+
+    final trailing = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (!narrow) ...[
+          const WashGoLogo(height: 36),
+          const SizedBox(width: 8),
+        ],
         ProfileAvatar(
           key: ValueKey(profileImagePath ?? 'no-photo'),
           profileImagePath: profileImagePath,
           radius: 22,
         ),
       ],
+    );
+
+    if (narrow) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [greeting, trailing],
+          ),
+        ],
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(child: greeting),
+        trailing,
+      ],
+    );
+  }
+}
+
+class _QuickActionsGrid extends StatelessWidget {
+  final BookingModel? active;
+  final void Function(int tabIndex) onNavigate;
+
+  const _QuickActionsGrid({
+    required this.active,
+    required this.onNavigate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = [
+      QuickActionCard(
+        icon: Icons.calendar_today_outlined,
+        label: 'Book Wash',
+        color: AppColors.aquaBlue,
+        onTap: () => onNavigate(1),
+      ),
+      QuickActionCard(
+        icon: Icons.queue_outlined,
+        label: 'Track Queue',
+        color: AppColors.cyan,
+        onTap: () => onNavigate(2),
+      ),
+      QuickActionCard(
+        icon: Icons.history_outlined,
+        label: 'History',
+        color: AppColors.teal,
+        onTap: () => onNavigate(3),
+      ),
+      QuickActionCard(
+        icon: Icons.qr_code_2_outlined,
+        label: 'QR Receipt',
+        color: AppColors.deepBlue,
+        onTap: () {
+          if (active == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No active booking for QR receipt.')),
+            );
+            return;
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => QRReceiptScreen(booking: active!),
+            ),
+          );
+        },
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final twoColumn = constraints.maxWidth >= 280;
+        if (!twoColumn) {
+          return Column(
+            children: [
+              for (final card in cards) ...[
+                card,
+                const SizedBox(height: 12),
+              ],
+            ],
+          );
+        }
+
+        return Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: cards[0]),
+                const SizedBox(width: 12),
+                Expanded(child: cards[1]),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(child: cards[2]),
+                const SizedBox(width: 12),
+                Expanded(child: cards[3]),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:washgo/core/widgets/adaptive_app_shell.dart';
 import 'package:washgo/core/widgets/app_bottom_nav.dart';
-import 'package:washgo/core/widgets/app_scaffold.dart';
 import 'package:washgo/screens/admin/admin_dashboard_screen.dart';
 import 'package:washgo/screens/admin/manage_bookings_screen.dart';
 import 'package:washgo/screens/admin/manage_services_screen.dart';
@@ -59,24 +59,17 @@ class AdminMainScreenState extends State<AdminMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      padding: EdgeInsets.zero,
-      extendBody: true,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          AdminDashboardScreen(onNavigate: switchTab),
-          const ManageServicesScreen(),
-          const ManageBookingsScreen(),
-          const QueueControlScreen(),
-          const ReportsScreen(),
-        ],
-      ),
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: _currentIndex,
-        onTap: switchTab,
-        items: _navItems,
-      ),
+    return AdaptiveAppShell(
+      currentIndex: _currentIndex,
+      onTabChanged: switchTab,
+      navItems: _navItems,
+      children: [
+        AdminDashboardScreen(onNavigate: switchTab),
+        const ManageServicesScreen(),
+        const ManageBookingsScreen(),
+        const QueueControlScreen(),
+        const ReportsScreen(),
+      ],
     );
   }
 }

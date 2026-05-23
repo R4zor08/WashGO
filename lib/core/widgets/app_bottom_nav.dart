@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 
 class AppBottomNavItem {
   final IconData icon;
@@ -28,9 +29,13 @@ class AppBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showLabels = ResponsiveLayout.showBottomNavLabels(context);
+    final hMargin = ResponsiveLayout.horizontalPadding(context);
+    final iconSize = showLabels ? 22.0 : 24.0;
+
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      margin: EdgeInsets.fromLTRB(hMargin, 0, hMargin, 16),
+      padding: EdgeInsets.symmetric(horizontal: showLabels ? 8 : 4, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.cardDark,
         borderRadius: BorderRadius.circular(24),
@@ -55,7 +60,7 @@ class AppBottomNav extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: showLabels ? 8 : 10),
                 decoration: BoxDecoration(
                   color: isActive
                       ? AppColors.aquaBlue.withValues(alpha: 0.15)
@@ -68,18 +73,22 @@ class AppBottomNav extends StatelessWidget {
                     Icon(
                       isActive ? item.activeIcon : item.icon,
                       color: isActive ? AppColors.cyan : AppColors.textSecondary,
-                      size: 22,
+                      size: iconSize,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      item.label,
-                      style: AppTextStyles.caption.copyWith(
-                        fontSize: 10,
-                        color: isActive ? AppColors.cyan : AppColors.textSecondary,
-                        fontWeight:
-                            isActive ? FontWeight.w600 : FontWeight.w400,
+                    if (showLabels) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        item.label,
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 10,
+                          color: isActive ? AppColors.cyan : AppColors.textSecondary,
+                          fontWeight:
+                              isActive ? FontWeight.w600 : FontWeight.w400,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),

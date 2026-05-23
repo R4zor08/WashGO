@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
 import 'package:washgo/core/constants/booking_status.dart';
 import 'package:washgo/core/state/app_state.dart';
@@ -44,7 +45,7 @@ class _QueueTrackingScreenState extends State<QueueTrackingScreen> {
     final pendingInFilter = _pendingCountForFilter(state, _selectedFilter);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 100),
+      padding: EdgeInsets.only(bottom: ResponsiveLayout.navigationBottomInset(context)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,7 +59,12 @@ class _QueueTrackingScreenState extends State<QueueTrackingScreen> {
             onSelected: (f) => setState(() => _selectedFilter = f),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            padding: EdgeInsets.fromLTRB(
+              ResponsiveLayout.horizontalPadding(context),
+              10,
+              ResponsiveLayout.horizontalPadding(context),
+              0,
+            ),
             child: Text(
               _selectedFilter == 'All'
                   ? '$pendingInFilter in queue total'

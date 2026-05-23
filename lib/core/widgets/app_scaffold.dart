@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:washgo/core/constants/app_colors.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 
 class AppScaffold extends StatelessWidget {
   final Widget body;
   final PreferredSizeWidget? appBar;
   final Widget? bottomNavigationBar;
   final bool extendBody;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
+  final bool useResponsivePadding;
 
   const AppScaffold({
     super.key,
@@ -14,11 +16,17 @@ class AppScaffold extends StatelessWidget {
     this.appBar,
     this.bottomNavigationBar,
     this.extendBody = false,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16),
+    this.padding,
+    this.useResponsivePadding = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final resolvedPadding = padding ??
+        (useResponsivePadding
+            ? EdgeInsets.symmetric(horizontal: ResponsiveLayout.horizontalPadding(context))
+            : const EdgeInsets.symmetric(horizontal: 16));
+
     return Scaffold(
       extendBody: extendBody,
       appBar: appBar,
@@ -31,7 +39,7 @@ class AppScaffold extends StatelessWidget {
         ),
         child: SafeArea(
           child: Padding(
-            padding: padding,
+            padding: resolvedPadding,
             child: body,
           ),
         ),

@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/services/receipt_download_service.dart';
 import 'package:washgo/core/state/app_state.dart';
+import 'package:washgo/core/widgets/responsive_content.dart';
 import 'package:washgo/core/widgets/app_scaffold.dart';
 import 'package:washgo/core/widgets/custom_button.dart';
 import 'package:washgo/core/widgets/status_badge.dart';
@@ -81,8 +83,17 @@ class _QRReceiptScreenState extends State<QRReceiptScreen> {
               _buildHeader(context),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  child: _ReceiptTicket(booking: widget.booking, qrData: qrData),
+                  padding: EdgeInsets.fromLTRB(
+                    ResponsiveLayout.horizontalPadding(context),
+                    8,
+                    ResponsiveLayout.horizontalPadding(context),
+                    16,
+                  ),
+                  child: ResponsiveContent(
+                    size: ContentSize.auth,
+                    padding: EdgeInsets.zero,
+                    child: _ReceiptTicket(booking: widget.booking, qrData: qrData),
+                  ),
                 ),
               ),
               _buildActionBar(context),
@@ -122,7 +133,12 @@ class _QRReceiptScreenState extends State<QRReceiptScreen> {
 
   Widget _buildActionBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      padding: EdgeInsets.fromLTRB(
+        ResponsiveLayout.horizontalPadding(context),
+        12,
+        ResponsiveLayout.horizontalPadding(context),
+        12,
+      ),
       decoration: BoxDecoration(
         color: AppColors.cardDark.withValues(alpha: 0.95),
         border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.08))),
@@ -152,6 +168,8 @@ class _ReceiptTicket extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final qrSize = ResponsiveLayout.qrReceiptSize(context);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -198,13 +216,13 @@ class _ReceiptTicket extends StatelessWidget {
                       color: AppColors.textSecondary.withValues(alpha: 0.15),
                     ),
                   ),
-                  child: SizedBox(
-                    width: 168,
-                    height: 168,
-                    child: QrImageView(
-                      data: qrData,
-                      version: QrVersions.auto,
-                      size: 168,
+                    child: SizedBox(
+                      width: qrSize,
+                      height: qrSize,
+                      child: QrImageView(
+                        data: qrData,
+                        version: QrVersions.auto,
+                        size: qrSize,
                       backgroundColor: AppColors.lightBackground,
                       eyeStyle: const QrEyeStyle(
                         eyeShape: QrEyeShape.square,

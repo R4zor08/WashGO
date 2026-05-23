@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 
 class ListScreenHeader extends StatelessWidget {
   final String title;
@@ -15,8 +16,9 @@ class ListScreenHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final h = ResponsiveLayout.horizontalPadding(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.fromLTRB(h, 16, h, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -49,8 +51,9 @@ class ListSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final h = ResponsiveLayout.horizontalPadding(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: EdgeInsets.fromLTRB(h, 12, h, 0),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
@@ -130,8 +133,9 @@ class _ListFilterChipsState extends State<ListFilterChips> {
       minThumbLength: 36,
     );
 
+    final h = ResponsiveLayout.horizontalPadding(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: h),
       child: Theme(
         data: Theme.of(context).copyWith(scrollbarTheme: scrollbarTheme),
         child: SizedBox(
@@ -224,8 +228,9 @@ class ListResultCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = count == 1 ? singularLabel : pluralLabel;
+    final h = ResponsiveLayout.horizontalPadding(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+      padding: EdgeInsets.fromLTRB(h, 10, h, 0),
       child: Text(
         '$count $label',
         style: AppTextStyles.caption.copyWith(

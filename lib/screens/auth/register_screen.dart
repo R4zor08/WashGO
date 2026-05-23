@@ -5,6 +5,7 @@ import 'package:washgo/core/constants/app_text_styles.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/app_scaffold.dart';
 import 'package:washgo/core/widgets/custom_button.dart';
+import 'package:washgo/core/widgets/responsive_content.dart';
 import 'package:washgo/core/widgets/custom_text_field.dart';
 import 'package:washgo/screens/auth/login_screen.dart';
 import 'package:washgo/screens/user/user_main_screen.dart';
@@ -67,9 +68,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      body: SingleChildScrollView(
-        child: Column(
+      padding: EdgeInsets.zero,
+      body: ResponsiveContent.auth(
+        alignTop: true,
+        child: SingleChildScrollView(
+          child: Column(
           children: [
             Align(
               alignment: Alignment.centerLeft,
@@ -153,6 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 24),
           ],
+        ),
         ),
       ),
     );

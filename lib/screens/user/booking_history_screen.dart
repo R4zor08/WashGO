@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/booking_card.dart';
 import 'package:washgo/core/widgets/empty_state.dart';
@@ -91,7 +92,12 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen> {
                   subtitle: 'Try adjusting your search or filters',
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+                  padding: EdgeInsets.fromLTRB(
+                    ResponsiveLayout.horizontalPadding(context),
+                    12,
+                    ResponsiveLayout.horizontalPadding(context),
+                    ResponsiveLayout.navigationBottomInset(context),
+                  ),
                   itemCount: bookings.length,
                   itemBuilder: (context, index) {
                     final booking = bookings[index];

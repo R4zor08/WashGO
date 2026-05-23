@@ -36,6 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AppState>().isLoading;
+    final screenW = MediaQuery.sizeOf(context).width;
+    final orbScale = (screenW / 390).clamp(0.75, 1.2);
 
     return Scaffold(
       body: Container(
@@ -50,8 +52,8 @@ class _SplashScreenState extends State<SplashScreen> {
               top: -80,
               right: -60,
               child: Container(
-                width: 220,
-                height: 220,
+                width: 220 * orbScale,
+                height: 220 * orbScale,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.limeAccent.withValues(alpha: 0.18),
@@ -62,8 +64,8 @@ class _SplashScreenState extends State<SplashScreen> {
               bottom: -100,
               left: -80,
               child: Container(
-                width: 280,
-                height: 280,
+                width: 280 * orbScale,
+                height: 280 * orbScale,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.aquaBlue.withValues(alpha: 0.12),
@@ -74,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const WashGoLogo(height: 140, showGlow: true),
+                  WashGoLogo(height: 120 * orbScale.clamp(0.9, 1.15), showGlow: true),
                   const SizedBox(height: 24),
                   Text(
                     'WashGo',

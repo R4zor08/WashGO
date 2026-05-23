@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/app_scaffold.dart';
 import 'package:washgo/core/widgets/booking_card.dart';
@@ -56,40 +57,68 @@ class AdminDashboardScreen extends StatelessWidget {
       return const Center(child: Text('Not logged in', style: AppTextStyles.body));
     }
 
+    final gridCols = ResponsiveLayout.gridCrossAxisCount(context, compact: 2, medium: 3, expanded: 4);
+    final narrowHeader = MediaQuery.sizeOf(context).width < 400;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+      padding: ResponsiveLayout.screenPadding(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          if (narrowHeader)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      'Hello, ${admin.firstName}',
-                      style: AppTextStyles.headline.copyWith(fontSize: 22),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Expanded(
+                      child: Text(
+                        'Hello, ${admin.firstName}',
+                        style: AppTextStyles.headline.copyWith(fontSize: 22),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                    Text('Admin Control Panel', style: AppTextStyles.subtitle),
+                    IconButton(
+                      onPressed: () => _confirmLogout(context),
+                      tooltip: 'Logout',
+                      icon: const Icon(Icons.logout, color: AppColors.dangerRed),
+                    ),
                   ],
                 ),
-              ),
-              IconButton(
-                onPressed: () => _confirmLogout(context),
-                tooltip: 'Logout',
-                icon: const Icon(Icons.logout, color: AppColors.dangerRed),
-              ),
-              const SizedBox(width: 4),
-              const WashGoLogo(height: 36),
-            ],
-          ),
+                Text('Admin Control Panel', style: AppTextStyles.subtitle),
+              ],
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hello, ${admin.firstName}',
+                        style: AppTextStyles.headline.copyWith(fontSize: 22),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text('Admin Control Panel', style: AppTextStyles.subtitle),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => _confirmLogout(context),
+                  tooltip: 'Logout',
+                  icon: const Icon(Icons.logout, color: AppColors.dangerRed),
+                ),
+                const SizedBox(width: 4),
+                const WashGoLogo(height: 36),
+              ],
+            ),
           const SizedBox(height: 20),
           GridView.count(
-            crossAxisCount: 2,
+            crossAxisCount: gridCols,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 12,

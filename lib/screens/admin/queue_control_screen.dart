@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/custom_button.dart';
@@ -18,7 +19,7 @@ class QueueControlScreen extends StatelessWidget {
     final serving = state.currentServingQueue;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+      padding: ResponsiveLayout.screenPadding(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

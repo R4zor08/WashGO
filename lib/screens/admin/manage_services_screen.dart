@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/models/service_model.dart';
@@ -199,7 +200,12 @@ class _ManageServicesScreenState extends State<ManageServicesScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: EdgeInsets.fromLTRB(
+            ResponsiveLayout.horizontalPadding(context),
+            16,
+            ResponsiveLayout.horizontalPadding(context),
+            0,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -238,7 +244,12 @@ class _ManageServicesScreenState extends State<ManageServicesScreen> {
         ),
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+            padding: EdgeInsets.fromLTRB(
+              ResponsiveLayout.horizontalPadding(context),
+              0,
+              ResponsiveLayout.horizontalPadding(context),
+              ResponsiveLayout.navigationBottomInset(context),
+            ),
             itemCount: services.length,
             itemBuilder: (context, index) {
               final s = services[index];

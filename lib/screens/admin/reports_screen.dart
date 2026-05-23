@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:washgo/core/constants/app_colors.dart';
 import 'package:washgo/core/constants/app_text_styles.dart';
+import 'package:washgo/core/layout/responsive_layout.dart';
 import 'package:washgo/core/state/app_state.dart';
 import 'package:washgo/core/widgets/stat_card.dart';
 
@@ -14,17 +15,20 @@ class ReportsScreen extends StatelessWidget {
     final weekly = state.weeklyBookings;
     final maxBar = weekly.isEmpty
         ? 1.0
-        : weekly.reduce((a, b) => a > b ? a : b).toDouble().clamp(1, double.infinity);
+        : weekly.reduce((a, b) => a > b ? a : b).toDouble().clamp(1.0, double.infinity).toDouble();
+
+    final gridCols = ResponsiveLayout.gridCrossAxisCount(context, compact: 2, medium: 3, expanded: 4);
+    final chartScrollable = MediaQuery.sizeOf(context).width < 400;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+      padding: ResponsiveLayout.screenPadding(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Reports', style: AppTextStyles.headline.copyWith(fontSize: 24)),
           const SizedBox(height: 20),
           GridView.count(
-            crossAxisCount: 2,
+            crossAxisCount: gridCols,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 12,
@@ -95,33 +99,12 @@ class ReportsScreen extends StatelessWidget {
             ),
             child: SizedBox(
               height: 160,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(weekly.length, (index) {
-                  final value = weekly[index];
-                  final height = (value / maxBar) * 120;
-                  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('$value', style: AppTextStyles.caption.copyWith(fontSize: 10)),
-                      const SizedBox(height: 4),
-                      Container(
-                        width: 28,
-                        height: height,
-                        decoration: BoxDecoration(
-                          gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: AppColors.glowShadow(blur: 8),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(days[index], style: AppTextStyles.caption.copyWith(fontSize: 10)),
-                    ],
-                  );
-                }),
-              ),
+              child: chartScrollable
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: _WeeklyChartRow(weekly: weekly, maxBar: maxBar),
+                    )
+                  : _WeeklyChartRow(weekly: weekly, maxBar: maxBar),
             ),
           ),
           const SizedBox(height: 24),
@@ -150,6 +133,48 @@ class ReportsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _WeeklyChartRow extends StatelessWidget {
+  final List<int> weekly;
+  final double maxBar;
+
+  const _WeeklyChartRow({required this.weekly, required this.maxBar});
+
+  @override
+  Widget build(BuildContext context) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: List.generate(weekly.length, (index) {
+        final value = weekly[index];
+        final height = (value / maxBar) * 120;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text('$value', style: AppTextStyles.caption.copyWith(fontSize: 10)),
+              const SizedBox(height: 4),
+              Container(
+                width: 28,
+                height: height,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: AppColors.glowShadow(blur: 8),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(days[index], style: AppTextStyles.caption.copyWith(fontSize: 10)),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

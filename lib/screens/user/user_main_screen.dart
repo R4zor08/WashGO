@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:washgo/core/widgets/adaptive_app_shell.dart';
 import 'package:washgo/core/widgets/app_bottom_nav.dart';
-import 'package:washgo/core/widgets/app_scaffold.dart';
 import 'package:washgo/screens/user/booking_history_screen.dart';
 import 'package:washgo/screens/user/profile_screen.dart';
 import 'package:washgo/screens/user/queue_tracking_screen.dart';
@@ -59,24 +59,17 @@ class UserMainScreenState extends State<UserMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      padding: EdgeInsets.zero,
-      extendBody: true,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          UserDashboardScreen(onNavigate: switchTab),
-          const ServicesScreen(),
-          const QueueTrackingScreen(),
-          const BookingHistoryScreen(),
-          ProfileScreen(onNavigateToHistory: () => switchTab(3)),
-        ],
-      ),
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: _currentIndex,
-        onTap: switchTab,
-        items: _navItems,
-      ),
+    return AdaptiveAppShell(
+      currentIndex: _currentIndex,
+      onTabChanged: switchTab,
+      navItems: _navItems,
+      children: [
+        UserDashboardScreen(onNavigate: switchTab),
+        const ServicesScreen(),
+        const QueueTrackingScreen(),
+        const BookingHistoryScreen(),
+        ProfileScreen(onNavigateToHistory: () => switchTab(3)),
+      ],
     );
   }
 }
