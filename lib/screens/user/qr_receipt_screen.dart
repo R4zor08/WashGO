@@ -48,7 +48,7 @@ class _QRReceiptScreenState extends State<QRReceiptScreen> {
       }
 
       messenger.showSnackBar(
-        _snackBar('Receipt saved to:\n$savedPath'),
+        _snackBar(ReceiptDownloadService.successMessage(savedPath)),
       );
     } catch (_) {
       if (!mounted) return;

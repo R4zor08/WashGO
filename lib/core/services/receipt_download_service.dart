@@ -1,34 +1,83 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:washgo/models/booking_model.dart';
 
 class ReceiptDownloadService {
+  /// Whether receipts save directly to Downloads (Android/iOS) vs a desktop picker.
+  static bool get savesDirectlyToDownloads =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+
+  /// User-facing message after a successful save.
+  static String successMessage(String savedPath) {
+    final fileName = p.basename(savedPath);
+    if (savesDirectlyToDownloads) {
+      return 'Receipt saved to Downloads\n$fileName';
+    }
+    return 'Receipt saved to:\n$savedPath';
+  }
+
   /// Saves a PDF receipt. Returns the saved file path, or null if cancelled.
   static Future<String?> downloadReceipt({
     required BookingModel booking,
     required String qrPayload,
   }) async {
+    if (kIsWeb) return null;
+
     final safeId = booking.id.replaceAll(RegExp(r'[^\w\-]'), '_');
     final suggestedName = 'WashGo-Receipt-$safeId.pdf';
+    final bytes = await _buildPdfBytes(booking: booking, qrPayload: qrPayload);
 
+    if (savesDirectlyToDownloads) {
+      return _saveToDownloads(bytes, suggestedName);
+    }
+
+    return _saveViaFilePicker(bytes, suggestedName);
+  }
+
+  static Future<String> _saveToDownloads(Uint8List bytes, String fileName) async {
+    final downloadsDir = await getDownloadsDirectory();
+    if (downloadsDir == null) {
+      throw StateError('Downloads folder is not available on this device.');
+    }
+
+    final filePath = await _resolveUniquePath(downloadsDir.path, fileName);
+    await File(filePath).writeAsBytes(bytes, flush: true);
+    return filePath;
+  }
+
+  static Future<String> _resolveUniquePath(String directory, String fileName) async {
+    var candidate = p.join(directory, fileName);
+    if (!await File(candidate).exists()) return candidate;
+
+    final stem = p.basenameWithoutExtension(fileName);
+    var counter = 1;
+    while (true) {
+      candidate = p.join(directory, '$stem-($counter).pdf');
+      if (!await File(candidate).exists()) return candidate;
+      counter++;
+    }
+  }
+
+  static Future<String?> _saveViaFilePicker(Uint8List bytes, String suggestedName) async {
     final savePath = await FilePicker.platform.saveFile(
       dialogTitle: 'Save Receipt',
       fileName: suggestedName,
       type: FileType.custom,
       allowedExtensions: const ['pdf'],
+      bytes: bytes,
     );
 
     if (savePath == null || savePath.isEmpty) return null;
 
-    final filePath = savePath.toLowerCase().endsWith('.pdf') ? savePath : '$savePath.pdf';
-    final bytes = await _buildPdfBytes(booking: booking, qrPayload: qrPayload);
-
-    await File(filePath).writeAsBytes(bytes, flush: true);
-    return filePath;
+    return savePath.toLowerCase().endsWith('.pdf') ? savePath : '$savePath.pdf';
   }
 
   static Future<Uint8List> _buildPdfBytes({
